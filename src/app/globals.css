@@ -1,0 +1,416 @@
+@import "tailwindcss";
+
+/*
+ * Palette. Lime is the brand colour and leads everywhere.
+ * Plum is the dark ground, violet / tangerine / pink are the supporting cast.
+ */
+:root {
+  --paper: #f7f4ee;
+  --card: #ffffff;
+  --ink: #141414;
+  --muted: #6b675f;
+  --line: rgba(20, 20, 20, 0.12);
+  --accent: #bffe28;
+  --plum: #23103a;
+  --violet: #6b4eff;
+  --tangerine: #ff5a1f;
+  --pink: #ff4d9d;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-plum: var(--plum);
+  --color-violet: var(--violet);
+  --color-tangerine: var(--tangerine);
+  --color-pink: var(--pink);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-imbue), ui-serif, Georgia, serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+/* Display type: condensed, loud, all caps */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-optical-sizing: auto;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 0.9;
+}
+
+/* Tighter leading for the two biggest headlines */
+.display-tight {
+  line-height: 0.84;
+}
+
+/* Small wide-tracked label */
+.label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* ---------- The dot: Segun's full stop ---------- */
+.dot {
+  display: inline-block;
+  width: 0.17em;
+  height: 0.17em;
+  margin-left: 0.05em;
+  border-radius: 9999px;
+  background: var(--dot, var(--accent));
+}
+
+/* ---------- Cut paper shapes ---------- */
+.cut-a {
+  clip-path: polygon(0 3%, 30% 0, 62% 2.5%, 100% 0, 98.5% 48%, 100% 96%, 70% 100%, 38% 97.5%, 2% 100%, 0 55%);
+}
+.cut-b {
+  clip-path: polygon(1.5% 0, 45% 2.5%, 100% 0.5%, 99% 40%, 100% 100%, 58% 97.5%, 22% 100%, 0 97%, 1.5% 52%);
+}
+.cut-c {
+  clip-path: polygon(0 1%, 55% 3%, 98% 0, 100% 60%, 97.5% 100%, 48% 98%, 3% 100%, 1% 45%);
+}
+.cut-d {
+  clip-path: polygon(2% 2%, 26% 0, 74% 3%, 100% 1%, 98% 97%, 66% 100%, 30% 96.5%, 0 99%);
+}
+/* Very light cuts for video, so nothing important near the edge is lost */
+.cut-v1 {
+  clip-path: polygon(0 1%, 38% 0, 100% 0.8%, 99.2% 52%, 100% 99%, 60% 100%, 0.8% 99.2%, 0 46%);
+}
+.cut-v2 {
+  clip-path: polygon(0.8% 0, 62% 0.9%, 100% 0, 99.4% 44%, 100% 100%, 34% 99.1%, 0 100%, 0.6% 56%);
+}
+/* Rougher cut for small cards and tags */
+.cut-card {
+  clip-path: polygon(0 6%, 22% 0, 41% 4%, 86% 0, 100% 5%, 97% 44%, 100% 72%, 96% 78%, 96% 97%, 36% 100%, 21% 92%, 3% 90%, 5% 40%);
+}
+
+/* Jagged edge between two colour bands */
+.cut-edge {
+  height: clamp(26px, 4.5vw, 64px);
+}
+.cut-edge > div {
+  height: 100%;
+  clip-path: polygon(0 100%, 0 46%, 8% 64%, 17% 22%, 26% 58%, 35% 12%, 44% 50%, 54% 24%, 63% 68%, 71% 16%, 80% 54%, 88% 8%, 94% 46%, 100% 20%, 100% 100%);
+}
+.cut-edge[data-flip="true"] > div {
+  transform: scaleX(-1);
+}
+
+/* Speech balloon with a tail, a nod to the lettering work */
+.balloon {
+  border-radius: 1.1rem;
+}
+/* In a layer so Tailwind's `absolute` can still override it */
+@layer components {
+  .balloon {
+    position: relative;
+  }
+}
+.balloon::after {
+  content: "";
+  position: absolute;
+  left: 1.4rem;
+  bottom: -0.68rem;
+  width: 1.15rem;
+  height: 0.75rem;
+  background: inherit;
+  clip-path: polygon(0 0, 100% 0, 12% 100%);
+}
+.balloon[data-tail="right"]::after {
+  left: auto;
+  right: 1.4rem;
+  clip-path: polygon(0 0, 100% 0, 88% 100%);
+}
+
+/* ---------- Marquees ---------- */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+.marquee[data-mask="false"] {
+  mask-image: none;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: var(--marquee-gap, 1rem);
+  padding-right: var(--marquee-gap, 1rem);
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+  will-change: transform;
+}
+
+.marquee-track[data-direction="right"] {
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ---------- Scroll reveal, driven by the Reveal component ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* "pop": cards land like paper being slapped on a table */
+.reveal[data-variant="pop"] {
+  transform: translateY(60px) rotate(var(--from-rot, 8deg)) scale(0.86);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.8s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+/* "wipe": image uncovers from the bottom */
+.reveal[data-variant="wipe"] {
+  opacity: 1;
+  transform: none;
+}
+/* The clip sits on the child so the wrapper itself can still be seen by the observer */
+.reveal[data-variant="wipe"] > * {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal[data-variant="wipe"][data-visible="true"] > * {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ---------- Headline words rising out of their line ---------- */
+.rise {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0.09em 0 0.05em;
+  margin: -0.09em 0 -0.05em;
+}
+
+.rise > span {
+  display: inline-block;
+  transform: translateY(118%);
+  transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+[data-visible="true"] .rise > span {
+  transform: none;
+}
+
+/* The dot lands after the last word */
+[data-visible] > .dot {
+  transform: scale(0);
+  transition: transform 0.6s cubic-bezier(0.3, 1.9, 0.5, 1);
+}
+
+[data-visible="true"] > .dot {
+  transform: none;
+}
+
+/* Hero plays on load instead of on scroll */
+@keyframes rise-in {
+  from {
+    transform: translateY(118%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.hero-line .rise > span {
+  transition: none;
+  animation: rise-in 1s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 80ms + 120ms);
+}
+
+@keyframes dot-drop {
+  0% {
+    transform: translateY(-9em) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6);
+  }
+  42% {
+    transform: translateY(0) scale(1.35, 0.6);
+    animation-timing-function: cubic-bezier(0, 0.6, 0.4, 1);
+  }
+  62% {
+    transform: translateY(-1.5em) scale(0.92, 1.1);
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6);
+  }
+  80% {
+    transform: translateY(0) scale(1.18, 0.8);
+  }
+  90% {
+    transform: translateY(-0.3em) scale(1, 1);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.hero-dot {
+  transform-origin: 50% 100%;
+  animation: dot-drop 1.3s both;
+  animation-delay: 1s;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.hero-sticker {
+  animation: pop-in 0.7s cubic-bezier(0.3, 1.7, 0.5, 1) both;
+  animation-delay: var(--delay, 1.4s);
+  transition: translate 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  translate: calc(var(--mx, 0) * var(--depth, 20) * 1px) calc(var(--my, 0) * var(--depth, 20) * 1px);
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.spin-slow {
+  animation: spin 22s linear infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  45% {
+    transform: translateY(-140%) scale(0.94, 1.08);
+  }
+  92% {
+    transform: translateY(0) scale(1.2, 0.78);
+  }
+}
+
+.bob {
+  transform-origin: 50% 100%;
+  animation: bob 1.1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ---------- The dot as a cursor companion ---------- */
+.cursor-dot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cursor-dot[data-on="true"] {
+  opacity: 1;
+}
+
+.cursor-dot > span {
+  display: block;
+  translate: 14px 14px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 1.5px solid var(--ink);
+  border-radius: 9999px;
+  background: var(--accent);
+  color: var(--ink);
+  font-size: 0;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    height 0.25s cubic-bezier(0.3, 1.5, 0.5, 1),
+    padding 0.25s cubic-bezier(0.3, 1.5, 0.5, 1),
+    scale 0.25s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.cursor-dot[data-link="true"] > span {
+  scale: 1.6;
+}
+
+.cursor-dot[data-label="true"] > span {
+  scale: 1;
+  height: 30px;
+  padding: 7.5px 12px;
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track,
+  .spin-slow,
+  .bob,
+  .hero-dot,
+  .hero-sticker,
+  .hero-line .rise > span {
+    animation: none;
+  }
+  .hero-sticker {
+    translate: none;
+  }
+  .reveal,
+  .reveal[data-variant],
+  .reveal[data-variant="wipe"] > * {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+  .rise > span,
+  [data-visible] > .dot {
+    transform: none;
+    transition: none;
+  }
+}
