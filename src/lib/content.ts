@@ -11,7 +11,7 @@ export const site = {
   // Your live address, for example "https://segunbabawale.com". Link previews
   // use it to find the share image. Leave empty until you have a domain:
   // on Vercel the site then uses the address Vercel gives the project.
-  url: "",
+  url: "https://meetsegun.vercel.app",
   description:
     "Brand identity designer. I build logos, visual systems and brand stories for companies that want to be remembered.",
   email: "oluwasegunbabawale9@gmail.com",
